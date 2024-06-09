@@ -101,11 +101,28 @@ class MissionariesAndCannibalsProblem:
                 if successor not in visited and successor not in parent:
                    queue1.append(successor)
                    parent[successor] = current_state
-
-
-       
-            
+   
         # If the goal state is not found and the queue is exhausted, the function returns None
+        return None
+
+    def dfs(self):
+        stack = [self.initial_state]
+        parent = {self.initial_state:None}
+        visited = set()
+
+        while stack:
+            current_state = stack.pop()
+            if current_state == self.goal_state:
+                return self.reconstruct_path(current_state,parent)
+            visited.add(current_state)
+
+            successors = self.get_successors(current_state)
+
+            for succ in successors:
+                if succ not in visited and succ not in parent:
+                    stack.append(succ)
+                    parent[succ] = current_state
+
         return None
 
 
@@ -137,6 +154,7 @@ class MissionariesAndCannibalsProblem:
 
 object1 = MissionariesAndCannibalsProblem()
 solution = object1.bfs()
+solution = object1.dfs()
 
 if solution :
     print('solution found')
