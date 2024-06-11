@@ -151,10 +151,72 @@ class MissionariesAndCannibalsProblem:
 
         path.reverse()
         return path
+    def dls(self, state, limit, path=[]):
+        """
+        Perform a depth-limited search (DLS) from the given state with a specified depth limit.
+
+        Parameters:
+            state (tuple): The current state in the state space from which to start the search.
+            limit (int): The maximum depth limit for the search. If limit is 0, the function returns None unless the state is the goal state.
+            path: list of states from initial to goal state
+
+        Returns:
+            list of tuple: Returns a list of states representing the path from the initial state to the goal state, if a solution is found within the specified depth limit. If no solution is found, returns None.
+
+        Description:
+            This function implements a depth-first search up to a specified depth limit. It recursively explores all possible actions from the current state to generate successors and checks if any of them is the goal state. If the depth limit is reached without finding the goal state, the function backtracks to explore other possibilities from earlier states.
+        """
+        # (Implementation here)
+      if limit < 0:
+            return None
+        
+        path.append(state)
+
+        if state == self.goal_state:
+            return path
+        
+        if limit == 0:
+            path.pop()
+            return None
+        
+        successors = self.get_successors(state)
+
+        for succ in successors:
+            result = self.dls(succ, limit-1, path)
+            if result is not None:
+                return result
+        path.pop()
+        return None
+
+
+    def ids(self, start_state, max_depth):
+        """
+        Perform an iterative deepening search (IDS) from the start state up to a maximum depth.
+
+        Parameters:
+            start_state (tuple): The initial state from which to start the search.
+            max_depth (int): The maximum depth limit up to which the search should iterate.
+
+        Returns:
+            list of tuple: Returns a list of states representing the path from the initial state to the goal state, if a solution is found. If no solution is found within the maximum depth, returns None.
+
+        Description:
+            This function performs a series of depth-limited searches, gradually increasing the depth limit with each iteration. It starts with a depth limit of 0 and increases the depth limit by 1 in each iteration until it reaches the specified maximum depth or a solution is found. This approach combines the benefits of breadth-first and depth-first searches, ensuring completeness and optimality in finding the shortest path.
+        """
+        # (Implementation here)
+     for _ in range(max_depth + 1):
+            result = self.dls(start_state, max_depth)
+            if result is not None:
+                return result
+            
+        return None
+          
 
 object1 = MissionariesAndCannibalsProblem()
-solution = object1.bfs()
-solution = object1.dfs()
+#solution = object1.bfs()
+#solution = object1.dfs()
+# solution = object1.dls(object1.initial_state,20)   # depth = 20 (to avoid infinite loop)
+solution = object1.ids(object1.initial_state,20)   # depth = 20 (to avoid infinite loop)
 
 if solution :
     print('solution found')
